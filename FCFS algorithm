@@ -1,0 +1,136 @@
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FCFS Scheduling</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h2 {
+      color: #333;
+    }
+    input {
+      margin: 5px;
+      padding: 5px;
+    }
+    button {
+      margin: 10px 0;
+      padding: 8px 15px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 6px;
+      text-align: center;
+    }
+    .gantt {
+      display: flex;
+      margin-top: 20px;
+    }
+    .block {
+      border: 1px solid #000;
+      padding: 10px;
+      text-align: center;
+      background: #87CEEB;
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <h2>FCFS Scheduling Algorithm</h2>
+
+  <div>
+    <label>Process ID:</label>
+    <input type="text" id="pid">
+    <label>Burst Time:</label>
+    <input type="number" id="bt">
+    <label>Arrival Time:</label>
+    <input type="number" id="at">
+    <button onclick="addProcess()">Add Process</button>
+  </div>
+
+  <h3>Process List</h3>
+  <table id="processTable">
+    <tr>
+      <th>PID</th>
+      <th>Burst Time</th>
+      <th>Arrival Time</th>
+    </tr>
+  </table>
+
+  <button onclick="runFCFS()">Run FCFS</button>
+
+  <h3>Results</h3>
+  <div id="results"></div>
+  <div class="gantt" id="ganttChart"></div>
+
+  <script>
+    let processes = [];
+
+    function addProcess() {
+      let pid = document.getElementById("pid").value;
+      let bt = parseInt(document.getElementById("bt").value);
+      let at = parseInt(document.getElementById("at").value);
+
+      if(pid && !isNaN(bt) && !isNaN(at)) {
+        processes.push({pid, bt, at});
+        let table = document.getElementById("processTable");
+        let row = table.insertRow();
+        row.insertCell(0).innerText = pid;
+        row.insertCell(1).innerText = bt;
+        row.insertCell(2).innerText = at;
+      }
+    }
+
+    function runFCFS() {
+      // Sort by arrival time
+      processes.sort((a,b) => a.at - b.at);
+
+      let currentTime = 0;
+      let results = [];
+      let gantt = document.getElementById("ganttChart");
+      gantt.innerHTML = "";
+
+      processes.forEach(p => {
+        if(currentTime < p.at) currentTime = p.at; // CPU idle
+        let start = currentTime;
+        let finish = start + p.bt;
+        let tat = finish - p.at;
+        let wt = tat - p.bt;
+
+        results.push({pid:p.pid, bt:p.bt, at:p.at, wt, tat});
+        currentTime = finish;
+
+        // Gantt Chart block
+        let block = document.createElement("div");
+        block.className = "block";
+        block.innerHTML = `<b>${p.pid}</b><br>${start} - ${finish}`;
+        gantt.appendChild(block);
+      });
+
+      // Display Results Table
+      let resHTML = `<table>
+        <tr><th>PID</th><th>Burst Time</th><th>Arrival Time</th><th>Waiting Time</th><th>Turnaround Time</th></tr>`;
+      results.forEach(r => {
+        resHTML += `<tr>
+          <td>${r.pid}</td>
+          <td>${r.bt}</td>
+          <td>${r.at}</td>
+          <td>${r.wt}</td>
+          <td>${r.tat}</td>
+        </tr>`;
+      });
+      resHTML += "</table>";
+
+      document.getElementById("results").innerHTML = resHTML;
+    }
+  </script>
+</body>
+</html>
