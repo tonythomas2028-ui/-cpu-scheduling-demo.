@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJF Scheduling with User Input</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        input, button {
+            padding: 5px;
+            margin: 5px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .gantt {
+            margin-top: 20px;
+        }
+
+        .gantt span {
+            display: inline-block;
+            padding: 10px;
+            margin-right: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>SJF Scheduling Algorithm</h2>
+
+    <div id="inputForm">
+        <label>Process ID:</label>
+        <input type="text" id="processId" placeholder="e.g., P1" required>
+        <label>Arrival Time (AT):</label>
+        <input type="number" id="arrivalTime" min="0" required>
+        <label>Burst Time (BT):</label>
+        <input type="number" id="burstTime" min="1" required>
+        <button onclick="addProcess()">Add Process</button>
+    </div>
+
+    <button onclick="runSJF()">Run SJF Scheduling</button>
+
+    <h3>Process List</h3>
+    <ul id="processList"></ul>
+
+    <div id="result"></div>
+    <div class="gantt" id="ganttChart"></div>
+
+    <script>
+        let processes = [];
+
+        function addProcess() {
+            const id = document.getElementById('processId').value.trim();
+            const arrival = parseInt(document.getElementById('arrivalTime').value);
+            const burst = parseInt(document.getElementById('burstTime').value);
+
+            if (id === '' || isNaN(arrival) || isNaN(burst)) {
+                alert('Please fill all fields properly.');
+                return;
+            }
+
+            processes.push({ id, arrival, burst });
+
+            // Update process list display
+            let list = document.getElementById('processList');
+            list.innerHTML = '';
+            processes.forEach((p) => {
+                list.innerHTML += `<li>${p.id} | AT: ${p.arrival} | BT: ${p.burst}</li>`;
+            });
+
+            // Clear input fields
+            document.getElementById('processId').value = '';
+            document.getElementById('arrivalTime').value = '';
+            document.getElementById('burstTime').value = '';
+        }
+
+        function runSJF() {
+            if (processes.length === 0) {
+                alert('Please add at least one process.');
+                return;
+            }
+
+            let n = processes.length;
+            let completed = 0;
+            let currentTime = 0;
+            let isCompleted = new Array(n).fill(false);
+            let sequence = [];
+
+            // Initialize CT, TAT, WT arrays
+            let completionTime = new Array(n).fill(0);
+            let turnaroundTime = new Array(n).fill(0);
+            let waitingTime = new Array(n).fill(0);
+
+            while (completed < n) {
+                let idx = -1;
+                let minBurst = Infinity;
+
+                for (let i = 0; i < n; i++) {
+                    if (processes[i].arrival <= currentTime && !isCompleted[i]) {
+                        if (processes[i].burst < minBurst) {
+                            minBurst = processes[i].burst;
+                            idx = i;
+                        }
+                    }
+                }
+
+                if (idx !== -1) {
+                    currentTime += processes[idx].burst;
+                    completionTime[idx] = currentTime;
+                    turnaroundTime[idx] = completionTime[idx] - processes[idx].arrival;
+                    waitingTime[idx] = turnaroundTime[idx] - processes[idx].burst;
+
+                    isCompleted[idx] = true;
+                    completed++;
+                    sequence.push(processes[idx].id);
+                } else {
+                    currentTime++;
+                }
+            }
+
+            displayResult(completionTime, turnaroundTime, waitingTime, sequence);
+        }
+
+        function displayResult(completionTime, turnaroundTime, waitingTime, sequence) {
+            let resultDiv = document.getElementById('result');
+            let tableHTML = `<table>
+                                <tr>
+                                    <th>Process ID</th>
+                                    <th>AT</th>
+                                    <th>BT</th>
+                                    <th>CT</th>
+                                    <th>TAT</th>
+                                    <th>WT</th>
+                                </tr>`;
+
+            for (let i = 0; i < processes.length; i++) {
+                tableHTML += `<tr>
+                                <td>${processes[i].id}</td>
+                                <td>${processes[i].arrival}</td>
+                                <td>${processes[i].burst}</td>
+                                <td>${completionTime[i]}</td>
+                                <td>${turnaroundTime[i]}</td>
+                                <td>${waitingTime[i]}</td>
+                              </tr>`;
+            }
+
+            tableHTML += '</table>';
+            resultDiv.innerHTML = tableHTML;
+
+            // Gantt Chart
+            let ganttDiv = document.getElementById('ganttChart');
+            ganttDiv.innerHTML = '<h3>Gantt Chart</h3>';
+            sequence.forEach(p => {
+                ganttDiv.innerHTML += `<span>${p}</span>`;
+            });
+        }
+    </script>
+
+</body>
+
+</html>
