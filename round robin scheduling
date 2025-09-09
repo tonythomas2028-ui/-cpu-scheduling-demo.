@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Round Robin Scheduling</title>
+  <style>
+    body { background: lightblue; font-family: Arial, sans-serif; }
+    table { border-collapse: collapse; background: white; }
+    th, td { border: 1px solid black; padding: 6px 10px; text-align: center; }
+    button { margin-top: 10px; padding: 8px 14px; background: blue; color: white; border: none; cursor: pointer; }
+    button:hover { background: darkblue; }
+    pre { background: #f0f0f0; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h2>Round Robin (RR) Scheduling</h2>
+
+  <label>Time Quantum: <input type="number" id="quantum" value="2"></label><br><br>
+
+  <table>
+    <tr>
+      <th>Process</th>
+      <th>Arrival Time</th>
+      <th>Burst Time</th>
+    </tr>
+    <tr>
+      <td>P1</td><td><input type="number" id="at1" value="0"></td><td><input type="number" id="bt1" value="5"></td>
+    </tr>
+    <tr>
+      <td>P2</td><td><input type="number" id="at2" value="1"></td><td><input type="number" id="bt2" value="3"></td>
+    </tr>
+    <tr>
+      <td>P3</td><td><input type="number" id="at3" value="2"></td><td><input type="number" id="bt3" value="8"></td>
+    </tr>
+    <tr>
+      <td>P4</td><td><input type="number" id="at4" value="3"></td><td><input type="number" id="bt4" value="6"></td>
+    </tr>
+  </table>
+  <br>
+  <button onclick="rr()">Run Round Robin</button>
+
+  <h3>Output</h3>
+  <pre id="output"></pre>
+
+  <script>
+    function rr() {
+      let quantum = parseInt(document.getElementById("quantum").value)
+      let processes = []
+      for (let i = 1; i <= 4; i++) {
+        let at = parseInt(document.getElementById("at" + i).value)
+        let bt = parseInt(document.getElementById("bt" + i).value)
+        processes.push({ id: "P" + i, at: at, bt: bt, rt: bt, ct: 0 })
+      }
+      processes.sort((a, b) => a.at - b.at)
+
+      let time = 0, queue = [], completed = 0
+      let output = "Process\tAT\tBT\tCT\tTAT\tWT\n"
+
+      while (completed < processes.length) {
+        for (let p of processes) {
+          if (p.at <= time && p.rt > 0 && !queue.includes(p)) queue.push(p)
+        }
+        if (queue.length === 0) { time++; continue }
+
+        let p = queue.shift()
+        let execTime = Math.min(quantum, p.rt)
+        time += execTime
+        p.rt -= execTime
+
+        for (let q of processes) {
+          if (q.at <= time && q.rt > 0 && !queue.includes(q) && q !== p) queue.push(q)
+        }
+        if (p.rt > 0) queue.push(p)
+        else { p.ct = time; completed++ }
+      }
+
+      let totalWT = 0, totalTAT = 0
+      for (let p of processes) {
+        let tat = p.ct - p.at
+        let wt = tat - p.bt
+        totalWT += wt
+        totalTAT += tat
+        output += `${p.id}\t${p.at}\t${p.bt}\t${p.ct}\t${tat}\t${wt}\n`
+      }
+
+      output += "\nAverage Waiting Time: " + (totalWT / processes.length).toFixed(2)
+      output += "\nAverage Turnaround Time: " + (totalTAT / processes.length).toFixed(2)
+
+      document.getElementById("output").innerText = output
+    }
+  </script>
+</body>
+</html>
