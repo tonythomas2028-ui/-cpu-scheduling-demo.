@@ -61,5 +61,7 @@ This project demonstrates core CPU scheduling algorithms implemented in [your la
 | 8-10 | P2      |
 | 10-11| P3      |
 
+<img width="1365" height="689" alt="image" src="https://github.com/user-attachments/assets/f4c54c46-6811-4b1e-bea5-09ace7fd0ec6" />
+
 
 
