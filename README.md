@@ -65,6 +65,8 @@ This project demonstrates core CPU scheduling algorithms implemented in [your la
 <img width="1348" height="696" alt="image" src="https://github.com/user-attachments/assets/69591365-b074-4ed3-bc19-5a6bcc9ec0c1" />
 <img width="1363" height="598" alt="image" src="https://github.com/user-attachments/assets/85edd69f-c612-4171-ab82-254a182f8cd8" />
 
+# Git collaboration steps:
+
 🧭 1. Fork and Clone the Repository (if you're not the owner)
 
 If you're contributing to someone else's project:
