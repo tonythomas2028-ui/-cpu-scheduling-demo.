@@ -67,7 +67,7 @@ This project demonstrates core CPU scheduling algorithms implemented in [your la
 
 # Git collaboration steps:
 
-🧭 1. Fork and Clone the Repository (if you're not the owner)
+#🧭 1. Fork and Clone the Repository (if you're not the owner)
 
 If you're contributing to someone else's project:
 
@@ -81,7 +81,7 @@ If it's a shared team repo and you have write access:
 git clone https://github.com/team-name/project-name.git
 cd project-name
 
-🌿 2. Create a Feature Branch
+#🌿 2. Create a Feature Branch
 
 Always create a new branch before making changes:
 
@@ -90,7 +90,7 @@ git checkout -b feature/algorithm-update
 
 This keeps your work separate from the main branch, helping to avoid conflicts.
 
-💻 3. Make Changes and Commit
+#💻 3. Make Changes and Commit
 
 Edit files (e.g., add code, update README, fix bugs), then stage and commit:
 
@@ -102,13 +102,13 @@ git commit -m "Implement Round Robin scheduling algorithm"
 "Fix FCFS waiting time calculation" or
 "Add Gantt chart visualisation for SJF"
 
-🚀 4. Push Your Branch to GitHub
+#🚀 4. Push Your Branch to GitHub
 git push origin feature/algorithm-update
 
 
 This uploads your branch to the GitHub repo.
 
-🔃 5. Open a Pull Request (PR)
+#🔃 5. Open a Pull Request (PR)
 
 Go to the GitHub repository.
 
@@ -122,7 +122,7 @@ Click "Create Pull Request".
 
 💡 Pull Requests allow others to review your code before merging.
 
-🔁 6. Fetch and Pull Updates Regularly
+#🔁 6. Fetch and Pull Updates Regularly
 
 Before making new changes, always sync with the main branch to avoid conflicts:
 
@@ -137,7 +137,7 @@ git merge main
 # OR
 git rebase main
 
-✅ 7. Merge the Pull Request
+#✅ 7. Merge the Pull Request
 
 Once reviewed and approved:
 
@@ -150,7 +150,7 @@ Then pull changes to your local machine:
 git checkout main
 git pull origin main
 
-📸 8. Add Screenshots (Optional but Helpful)
+#📸 8. Add Screenshots (Optional but Helpful)
 
 You can document your collaboration visually in the README.md:
 
